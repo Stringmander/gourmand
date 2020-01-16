@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function PrimaryAppBar() {
+export default function PrimaryAppBar(props) {
   const classes = useStyles();
 
   return (
@@ -77,6 +77,7 @@ export default function PrimaryAppBar() {
                 input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
+              onKeyDown={props.handleSearchSubmit}
             />
           </div>
         </Toolbar>
