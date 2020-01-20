@@ -6,7 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import useSWR from 'swr';
 
 import PrimaryAppBar from '../components/AppBar.js';
-import SearchResultsList from '../components/SearchResultsList'
 import ResultCard from '../components/ResultCard'
 import fetcher from '../lib/fetcher';
 import URL from '../lib/config';
