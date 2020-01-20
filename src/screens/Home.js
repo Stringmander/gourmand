@@ -47,7 +47,7 @@ const Home = () => {
                 <div className={classes.root}>
                     <Grid container spacing={3} >
                         {searchResults.map(result => (
-                            <Grid item lg={3} xs={12}>
+                            <Grid item lg={3} md={4} sm={6} xs={12}>
                                 <ResultCard
                                     title={result.recipe.label}
                                     image={result.recipe.image}
