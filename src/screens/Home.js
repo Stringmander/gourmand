@@ -1,12 +1,25 @@
 import React, { useState, useMemo } from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 import useSWR from 'swr';
 
 import PrimaryAppBar from '../components/AppBar.js';
 import SearchResultsList from '../components/SearchResultsList'
+import ResultCard from '../components/ResultCard'
 import fetcher from '../lib/fetcher';
 import URL from '../lib/config';
 
+const useStyles = makeStyles(theme => ({
+    root: {
+        flexGrow: 1,
+    },
+}));
+
 const Home = () => {
+    const classes = useStyles();
+
     const [query, setQuery] = useState(null);
     const [searchResults, setSearchResults] = useState([]);
 
@@ -22,15 +35,31 @@ const Home = () => {
 
     useMemo(() => {
         if (data) {
-            setSearchResults(data.hits);  
+            setSearchResults(data.hits);
         }
-    },[data]);
+    }, [data]);
 
     return (
-        <div>
-            <PrimaryAppBar handleSearchSubmit={handleSearchSubmit} />
-            <SearchResultsList searchResults={searchResults} />
-        </div>
+
+        <>
+            <CssBaseline />
+            <Container>
+                <PrimaryAppBar handleSearchSubmit={handleSearchSubmit} />
+                <div className={classes.root}>
+                    <Grid container spacing={3} >
+                        {searchResults.map(result => (
+                            <Grid item lg={3} xs={12}>
+                                <ResultCard
+                                    title={result.recipe.label}
+                                    image={result.recipe.image}
+                                    content={result.recipe.source}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
+            </Container>
+        </>
     );
 }
 
