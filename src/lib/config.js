@@ -1,1 +1,3 @@
-export default URL = 'https://api.edamam.com/search'
+const path = 'https://api.edamam.com/search';
+
+export default path;

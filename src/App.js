@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import 'typeface-roboto';
 
 import Home from './screens/Home';
@@ -6,7 +7,11 @@ import Home from './screens/Home';
 function App() {
   return (
     <div className="App">
-      <Home />
+      <Router>
+        <Switch>
+          <Route path="/" component={Home} />
+        </Switch>
+      </Router>
     </div>
   );
 }
