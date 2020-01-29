@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Route, Link, useHistory, useLocation } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,14 +21,14 @@ const useStyles = makeStyles(theme => ({
 const Home = () => {
     const classes = useStyles();
 
-    const [query, setQuery] = useState(null);
-    const [searchResults, setSearchResults] = useState([]);
     let location = useLocation();
-    const [selectedRecipe, setSelectedRecipe] = useState(null);
-    const [open, setOpen] = useState(location.pathname.includes("recipe"));
+
+    const [query, setQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [open, setOpen] = useState(location.pathname.includes('recipe'));
 
 
-    const handleSearchSubmit = (e) => {
+    const handleSearchSubmit = e => {
         if (e.key === 'Enter') {
             setQuery(e.target.value);
 
@@ -36,30 +36,25 @@ const Home = () => {
         }
     }
 
-    const { data, error } = useSWR(query ? `${path}?q=${query}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}` : null, fetcher)
+    const { data, error } = useSWR(query !== '' ? `${path}?q=${query}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}` : [], fetcher)
 
     useMemo(() => {
-        if (data) {
-            setSearchResults(data.hits);
-        }
+        return data ? setSearchResults(data.hits) : []
     }, [data]);
 
 
-    const splitRecipeUri = (uri) => uri.split('_')[1];
+    const splitRecipeUri = uri => uri.split('_')[1];
 
     const handleClickOpen = () => {
         setOpen(true);
-    }
+    };
+
 
     let history = useHistory();
 
-    const handleCloseRouting = () => {
-        history.push("/");
-    }
-
     const handleClose = () => {
         setOpen(false);
-        handleCloseRouting();
+        history.push("/");
     };
 
 
@@ -70,16 +65,16 @@ const Home = () => {
                 <PrimaryAppBar handleSearchSubmit={handleSearchSubmit} />
                 <div className={classes.root}>
                     <Grid container spacing={3} >
-                        {searchResults.map(result => (
-                            <Grid key={result.recipe.uri} item lg={3} md={4} sm={6} xs={12}>
+                        {searchResults.map(i => (
+                            <Grid key={i.recipe.uri} item lg={3} md={4} sm={6} xs={12}>
                                 <Link
-                                to={{ pathname: `/recipe/${splitRecipeUri(result.recipe.uri)}` }}
-                                onClick={handleClickOpen}
+                                    to={{ pathname: `/recipe/${splitRecipeUri(i.recipe.uri)}` }}
+                                    onClick={handleClickOpen}
                                 >
                                     <ResultCard
-                                        title={result.recipe.label}
-                                        image={result.recipe.image}
-                                        content={result.recipe.source}
+                                        title={i.recipe.label}
+                                        image={i.recipe.image}
+                                        content={i.recipe.source}
                                     />
                                 </Link>
                             </Grid>
@@ -87,7 +82,15 @@ const Home = () => {
                     </Grid>
                 </div>
             </Container>
-            <Route path="/recipe/:id" component={ () => <RecipeDialog handleClose={handleClose} open={open} /> } />
+            <Route
+                path="/recipe/:id"
+                component={() => <RecipeDialog
+                    handleClose={handleClose}
+                    open={open}
+                    location={location}
+                    searchResults={searchResults}
+                />}
+            />
         </>
     );
 }
