@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import useSWR from 'swr';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -9,12 +12,14 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 import path from '../lib/config';
 import fetcher from '../lib/fetcher';
 
 const styles = theme => ({
-    root: {
+    dialogRoot: {
         margin: 0,
         padding: theme.spacing(2),
     },
@@ -26,10 +31,22 @@ const styles = theme => ({
     },
 });
 
+const useStyles = makeStyles(theme => ({
+    listBackground: {
+        backgroundColor: theme.palette.background.paper,
+    },
+    circularProgressRoot: {
+        display: 'flex',
+        '& > * + *': {
+            marginLeft: theme.spacing(2),
+        },
+    },
+}));
+
 const DialogTitle = withStyles(styles)(props => {
     const { children, classes, onClose, ...other } = props;
     return (
-        <MuiDialogTitle disableTypography className={classes.root} {...other}>
+        <MuiDialogTitle disableTypography className={classes.dialogRoot} {...other}>
             <Typography variant="h6">{children}</Typography>
             {onClose ? (
                 <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
@@ -54,43 +71,72 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 
-export default function RecipeDialog(props) {
-    const [currentRecipe, setCurrentRecipe] = useState('')
+function RecipeDialog({ location, searchResults, handleClose, open }) {
+    const classes = useStyles();
+    const recipeUid = location.pathname.split('recipe/')[1];
+    const currentRecipeUri = `http://www.edamam.com/ontologies/edamam.owl#recipe_${recipeUid}`;
 
-    const splitLocationPathname = props.location.pathname.split('recipe/')[1]
+    let recipes = new Proxy(
+        searchResults,
+        {
+            get: function (obj, prop) {
+                // The default behavior to return the value; prop is usually an integer
+                if (prop in obj) {
+                    return obj[prop];
+                }
 
-    const currentRecipeUri = `http://www.edamam.com/ontologies/edamam.owl#recipe_${splitLocationPathname}`;
+                let result, uris = {};
 
-    const findMatchingUri = array => array.findIndex(i => i.recipe.uri === currentRecipeUri);
+                for (let individualRecipe of obj) {
+                    if (individualRecipe.recipe.uri === prop) {
+                        result = individualRecipe.recipe;
+                    }
+                }
 
-    const { data, error } = useSWR(props.searchResults.length === 0 && props.location.pathname.includes('recipe') ? `${path}?r=http%3A%2F%2Fwww.edamam.com%2Fontologies%2Fedamam.owl%23recipe_${splitLocationPathname}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}` : {}, fetcher)
+                // Get a recipe by name
+                if (result) {
+                    return result;
+                }
 
-    useEffect(() => {
-        return (
-            props.searchResults.length !== 0 ? setCurrentRecipe(props.searchResults[findMatchingUri(props.searchResults)].recipe)
-            : data ? setCurrentRecipe(data[0])
-            : error
-        );
-    });
+                return undefined;
+            }
+        });
 
-    const listIngredients = currentRecipe ?  currentRecipe.ingredientLines.map(ingredient => <li> {ingredient} </li>) : "Loading..."
+    const { data, error, isValidating } = useSWR(searchResults.length === 0 && location.pathname.includes('recipe') ? `${path}?r=http%3A%2F%2Fwww.edamam.com%2Fontologies%2Fedamam.owl%23recipe_${recipeUid}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}` : undefined, fetcher)
+
+    const currentRecipe = data ? data[0] : recipes[currentRecipeUri]
+
 
     return (
-        <Dialog aria-labelledby="recipe-dialog-title" onClose={props.handleClose} open={props.open}>
-            <DialogTitle id="recipe-dialog-title" onClose={props.handleClose} >
-                <img src={currentRecipe.image} />
-            </DialogTitle>
-            <DialogContent>
-                <Typography>
-                    Ingredients
-                    <ul> {listIngredients} </ul>
-                </Typography>
-            </DialogContent>
-            <DialogActions>
-                <Button autoFocus color="primary" href={currentRecipe.url} target="_blank" >
-                    View directions
+        <Dialog aria-labelledby="recipe-dialog-title" onClose={handleClose} open={open} >
+            {currentRecipe && <>
+                <DialogTitle id="recipe-dialog-title" onClose={handleClose} >
+                    <Typography>
+                        {currentRecipe.label}
+                    </Typography>
+                    <img src={currentRecipe.image} />
+                </DialogTitle>
+                <DialogContent>
+                    <div className={classes.listBackground}>
+                        <List>
+                            {currentRecipe.ingredientLines.map(i => (
+                                <ListItem key={i} dense >
+                                    <ListItemText primary={i} />
+                                </ListItem>
+                            )
+                            )}
+                        </List>
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus color="primary" href={currentRecipe.url} target="_blank" >
+                        View directions
                 </Button>
-            </DialogActions>
-        </Dialog>
+                </DialogActions>
+            </>}
+            {isValidating && <CircularProgress /> }
+        </Dialog >
     );
 }
+
+export default RecipeDialog;
