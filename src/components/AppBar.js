@@ -9,16 +9,23 @@ import InputBase from '@material-ui/core/InputBase';
 // import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 
+import logo from '../assets/img/logo.svg';
+
 const useStyles = makeStyles(theme => ({
-  // root: {
-  //   flexGrow: 1,
-  // },
-  // menuButton: {
-  //   marginRight: theme.spacing(2),
-  // },
-  // title: {
-  //   flexGrow: 1,
-  // },
+  root: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+    fontFamily: 'Pacifico',
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -50,9 +57,16 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create('width'),
     width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 200,
+    [theme.breakpoints.up('sm')]: {
+      width: 120,
+      '&:focus': {
+        width: 200,
+      },
     },
+  },
+  logo: {
+    maxHeight: theme.spacing(5),
+    margin: theme.spacing(0, 2, 0, 2),
   },
 }));
 
@@ -63,6 +77,7 @@ export default function PrimaryAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
+          <img src={logo} className={classes.logo} />
           <Typography variant="h6" className={classes.title}>
             Gourmand
           </Typography>

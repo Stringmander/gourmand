@@ -68,26 +68,26 @@ const Home = () => {
     return (
         <>
             <CssBaseline />
+            <PrimaryAppBar handleSearchSubmit={handleSearchSubmit} />
             <Container>
-                <PrimaryAppBar handleSearchSubmit={handleSearchSubmit} />
                 {searchResults.length !== 0 && <div className={classes.gridRoot}>
-                        <Grid container spacing={3} >
-                            {searchResults.map(i => (
-                                <Grid key={i.recipe.uri} item lg={3} md={4} sm={6} xs={12}>
-                                    <Link
-                                        to={{ pathname: `/recipe/${splitRecipeUri(i.recipe.uri)}` }}
-                                        onClick={handleClickOpen}
-                                    >
-                                        <ResultCard
-                                            title={i.recipe.label}
-                                            image={i.recipe.image}
-                                            content={i.recipe.source}
-                                        />
-                                    </Link>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </div>}
+                    <Grid container spacing={3} >
+                        {searchResults.map(i => (
+                            <Grid key={i.recipe.uri} item lg={3} md={4} sm={6} xs={12}>
+                                <Link
+                                    to={{ pathname: `/recipe/${splitRecipeUri(i.recipe.uri)}` }}
+                                    onClick={handleClickOpen}
+                                >
+                                    <ResultCard
+                                        title={i.recipe.label}
+                                        image={i.recipe.image}
+                                        content={i.recipe.source}
+                                    />
+                                </Link>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>}
                 {isValidating && <CircularProgress />}
             </Container>
             <Route
