@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,9 +11,9 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 
 import SearchField from './SearchField';
+import SearchDrawer from './SearchDrawer';
 
 import logo from '../assets/img/logo.svg';
-import { useMediaQuery } from '@material-ui/core';
 
 
 const useStyles = makeStyles(theme => ({
@@ -58,43 +59,53 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 function PrimaryAppBar({ handleSearchSubmit }) {
   const theme = useTheme();
   const classes = useStyles();
+  const [searchDrawerOpen, setSearchDrawerOpen] = useState(false)
 
   const matchesUpSm = useMediaQuery(theme.breakpoints.up('sm'));
   const matchesDownXs = useMediaQuery(theme.breakpoints.down('xs'))
 
-
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar className={classes.toolbar} >
-          {matchesDownXs && <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>}
-          <span className={classes.logoWrapper} >
-            <img src={logo} className={classes.logo} />
-            <Typography variant="h6" className={classes.title}>
-              Gourmand
+    <>
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar className={classes.toolbar} >
+            {matchesDownXs && <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <MenuIcon />
+            </IconButton>}
+            <span className={classes.logoWrapper} >
+              <img src={logo} className={classes.logo} />
+              <Typography variant="h6" className={classes.title}>
+                Gourmand
             </Typography>
-          </span>
-          {matchesUpSm && <SearchField onKeyDownHandler={handleSearchSubmit} />}
-          {matchesDownXs && <IconButton className={classes.searchButton} color="inherit" >
-            <SearchIcon />
-          </IconButton>}
-          {matchesUpSm && <span className={classes.buttonsWrapper} >
-            <IconButton color="inherit" >
-              <FavoriteIcon />
-            </IconButton>
-            <IconButton color="inherit" >
-              <ShoppingCartIcon />
-            </IconButton>
-          </span>}
-        </Toolbar>
-      </AppBar>
-    </div>
+            </span>
+            {matchesUpSm && <SearchField onKeyDownHandler={handleSearchSubmit} />}
+            {matchesDownXs && <IconButton
+              className={classes.searchButton}
+              color="inherit"
+              onClick={() => setSearchDrawerOpen(true)}
+            >
+              <SearchIcon />
+            </IconButton>}
+            {matchesUpSm && <span className={classes.buttonsWrapper} >
+              <IconButton color="inherit" >
+                <FavoriteIcon />
+              </IconButton>
+              <IconButton color="inherit" >
+                <ShoppingCartIcon />
+              </IconButton>
+            </span>}
+          </Toolbar>
+        </AppBar>
+      </div>
+      <SearchDrawer
+        open={searchDrawerOpen}
+        setOpen={setSearchDrawerOpen}
+        handleSearchSubmit={handleSearchSubmit}
+      />
+    </>
   );
 }
 

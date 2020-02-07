@@ -18,6 +18,9 @@ const useStyles = makeStyles(theme => ({
         },
         gridColumn: 2,
         justifySelf: 'center',
+        [theme.breakpoints.down('xs')]: {
+            display: 'flex',
+        },
     },
     searchIcon: {
         width: theme.spacing(7),
@@ -30,6 +33,9 @@ const useStyles = makeStyles(theme => ({
     },
     inputRoot: {
         color: 'inherit',
+        [theme.breakpoints.down('xs')]: {
+            flexGrow: 1,
+        },
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 7),
