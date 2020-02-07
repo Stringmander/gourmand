@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
   toolbar: {
     display: 'flex',
+    justifyContent: 'space-between',
     [theme.breakpoints.up('sm')]: {
       display: 'grid',
       gridTemplateColumns: 'repeat(3, 1fr)'
@@ -34,24 +35,31 @@ const useStyles = makeStyles(theme => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
+  searchButton: {
+    marginLeft: theme.spacing(2),
+  },
   logoWrapper: {
     display: 'flex',
   },
   logo: {
     maxHeight: theme.spacing(4),
     margin: theme.spacing(0, 1),
+    margin: theme.spacing(0, 2),
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
   },
   buttonsWrapper: {
     justifySelf: 'flex-end',
     margin: theme.spacing(0, 2),
-  },
-  button: {
-    color: theme.palette.common.white,
+    [theme.breakpoints.down('xs')]: {
+      margin: theme.spacing(0, 0, 0, 2)
+    },
   },
 }));
 
 
-function PrimaryAppBar(props) {
+function PrimaryAppBar({ handleSearchSubmit }) {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -66,18 +74,21 @@ function PrimaryAppBar(props) {
           {matchesDownXs && <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>}
-          {matchesUpSm && <span className={classes.logoWrapper} >
+          <span className={classes.logoWrapper} >
             <img src={logo} className={classes.logo} />
             <Typography variant="h6" className={classes.title}>
               Gourmand
             </Typography>
-          </span>}
-          <SearchField onKeyDownHandler={props.handleSearchSubmit} />
+          </span>
+          {matchesUpSm && <SearchField onKeyDownHandler={handleSearchSubmit} />}
+          {matchesDownXs && <IconButton className={classes.searchButton} color="inherit" >
+            <SearchIcon />
+          </IconButton>}
           {matchesUpSm && <span className={classes.buttonsWrapper} >
-            <IconButton className={classes.button} >
+            <IconButton color="inherit" >
               <FavoriteIcon />
             </IconButton>
-            <IconButton className={classes.button} >
+            <IconButton color="inherit" >
               <ShoppingCartIcon />
             </IconButton>
           </span>}
