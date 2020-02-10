@@ -44,8 +44,7 @@ const useStyles = makeStyles(theme => ({
   },
   logo: {
     maxHeight: theme.spacing(4),
-    margin: theme.spacing(0, 1),
-    margin: theme.spacing(0, 2),
+    margin: theme.spacing(0, 1, 0, 2),
     [theme.breakpoints.down('xs')]: {
       display: 'none',
     },
