@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import PrimaryAppBar from '../components/AppBar.js';
+import MenuDrawer from '../components/MenuDrawer.js'
 import ResultCard from '../components/ResultCard';
 import RecipeDialog from '../components/RecipeDialog';
 import fetcher from '../lib/fetcher';
@@ -31,8 +32,9 @@ const Home = () => {
     let location = useLocation();
 
     const [query, setQuery] = useState('');
+    const [menuDrawerOpen, setMenuDrawerOpen] = useState(false)
     const [searchResults, setSearchResults] = useState([]);
-    const [open, setOpen] = useState(location.pathname.includes('recipe'));
+    const [recipeDialogOpen, setRecipeDialogOpen] = useState(location.pathname.includes('recipe'));
 
 
     const handleSearchSubmit = e => {
@@ -53,14 +55,14 @@ const Home = () => {
     const splitRecipeUri = uri => uri.split('_')[1];
 
     const handleClickOpen = () => {
-        setOpen(true);
+        setRecipeDialogOpen(true);
     };
 
 
     let history = useHistory();
 
     const handleClose = () => {
-        setOpen(false);
+        setRecipeDialogOpen(false);
         history.push("/");
     };
 
@@ -68,7 +70,8 @@ const Home = () => {
     return (
         <>
             <CssBaseline />
-            <PrimaryAppBar handleSearchSubmit={handleSearchSubmit} />
+            <PrimaryAppBar handleSearchSubmit={handleSearchSubmit} setMenuDrawerOpen={setMenuDrawerOpen} />
+            <MenuDrawer open={menuDrawerOpen} setOpen={setMenuDrawerOpen} />
             <Container>
                 {searchResults.length !== 0 && <div className={classes.gridRoot}>
                     <Grid container spacing={3} >
@@ -94,7 +97,7 @@ const Home = () => {
                 path="/recipe/:id"
                 component={() => <RecipeDialog
                     handleClose={handleClose}
-                    open={open}
+                    open={recipeDialogOpen}
                     location={location}
                     searchResults={searchResults}
                 />}

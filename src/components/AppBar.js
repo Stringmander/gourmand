@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function PrimaryAppBar({ handleSearchSubmit }) {
+function PrimaryAppBar({ handleSearchSubmit, setMenuDrawerOpen }) {
   const theme = useTheme();
   const classes = useStyles();
   const [searchDrawerOpen, setSearchDrawerOpen] = useState(false)
@@ -72,7 +72,13 @@ function PrimaryAppBar({ handleSearchSubmit }) {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar className={classes.toolbar} >
-            {matchesDownXs && <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            {matchesDownXs && <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="menu"
+              onClick={() => setMenuDrawerOpen(true)}
+            >
               <MenuIcon />
             </IconButton>}
             <span className={classes.logoWrapper} >
