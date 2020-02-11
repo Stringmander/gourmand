@@ -66,6 +66,7 @@ function SearchField(props) {
                 }}
                 inputProps={{ 'aria-label': 'search' }}
                 onKeyDown={props.onKeyDownHandler}
+                autoFocus
             />
         </div>
     );
