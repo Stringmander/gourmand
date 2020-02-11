@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import 'typeface-roboto';
 import './assets/css/fonts.css';
 
-import Home from './screens/Home';
+import Home from '../pages/Home';
 
 function App() {
   return (

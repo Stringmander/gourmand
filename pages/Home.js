@@ -7,12 +7,12 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import PrimaryAppBar from '../components/AppBar.js';
-import MenuDrawer from '../components/MenuDrawer.js'
-import ResultCard from '../components/ResultCard';
-import RecipeDialog from '../components/RecipeDialog';
-import fetcher from '../lib/fetcher';
-import path from '../lib/config';
+import PrimaryAppBar from '../src/components/AppBar.js';
+import MenuDrawer from '../src/components/MenuDrawer.js'
+import ResultCard from '../src/components/ResultCard';
+import RecipeDialog from '../src/components/RecipeDialog';
+import fetcher from '../src/lib/fetcher';
+import path from '../src/lib/config';
 
 const useStyles = makeStyles(theme => ({
     gridRoot: {
