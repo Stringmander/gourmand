@@ -1,29 +1,32 @@
 import React, { useState, useMemo } from 'react';
 import useSWR from 'swr';
 import { Route, Link, useHistory, useLocation } from 'react-router-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import PrimaryAppBar from '../src/components/AppBar.js';
-import MenuDrawer from '../src/components/MenuDrawer.js'
-import ResultCard from '../src/components/ResultCard';
-import RecipeDialog from '../src/components/RecipeDialog';
-import fetcher from '../src/lib/fetcher';
-import path from '../src/lib/config';
+import PrimaryAppBar from '../components/AppBar.js';
+import MenuDrawer from '../components/MenuDrawer.js'
+import ResultCard from '../components/ResultCard';
+import RecipeDialog from '../components/RecipeDialog';
+import fetcher from '../lib/fetcher';
+import path from '../lib/config';
 
 const useStyles = makeStyles(theme => ({
     gridRoot: {
         flexGrow: 1,
     },
     circularProgressRoot: {
-        display: 'flex',
-        '& > * + *': {
-            marginLeft: theme.spacing(2),
-        },
+        position: 'absolute',
+        left: '50%',
+        top: '50%'
     },
+    CircularProgress: {
+        position: 'relative',
+        left: '-50%',
+        top: '-50%'
+    }
 }));
 
 const Home = () => {
@@ -69,7 +72,6 @@ const Home = () => {
 
     return (
         <>
-            <CssBaseline />
             <PrimaryAppBar handleSearchSubmit={handleSearchSubmit} setMenuDrawerOpen={setMenuDrawerOpen} />
             <MenuDrawer open={menuDrawerOpen} setOpen={setMenuDrawerOpen} />
             <Container>
@@ -91,7 +93,9 @@ const Home = () => {
                         ))}
                     </Grid>
                 </div>}
-                {isValidating && <CircularProgress />}
+                {isValidating && <div className={classes.circularProgressRoot} >
+                    <CircularProgress className={classes.CircularProgress} />
+                </div>}
             </Container>
             <Route
                 path="/recipe/:id"

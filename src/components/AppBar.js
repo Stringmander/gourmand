@@ -19,6 +19,7 @@ import logo from '../assets/img/logo.svg';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
+    marginBottom: theme.spacing(2),
   },
   toolbar: {
     display: 'flex',

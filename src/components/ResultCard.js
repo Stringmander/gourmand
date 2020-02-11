@@ -12,7 +12,7 @@ import ShareIcon from '@material-ui/icons/Share';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        maxWidth: 345,
+        maxWidth: '100%',
     },
     header_root: {
         display: 'block'
